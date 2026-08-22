@@ -17,6 +17,7 @@ use App\Models\SaleTransaction;
 use Carbon\Carbon;
 use Exception;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Pagination\Cursor;
 use Illuminate\Support\Facades\DB;
 use Barryvdh\DomPDF\Facade\Pdf;
 
@@ -92,12 +93,41 @@ class KasirSaleTransactionController extends Controller
             }
         }
         
+        if ($request->boolean('last')) {
+            $limit = (int) $request->limit;
+            $total = (clone $datas)->count();
+        
+            $remainder = $total % $limit;
+            $lastPageSize = $remainder === 0 ? $limit : $remainder;
+        
+            if ($total === 0) {
+                $lastPageSize = 0;
+            }
+        
+            $items = (clone $datas)
+                ->orderByDesc('id')
+                ->limit($lastPageSize)
+                ->get()
+                ->reverse()
+                ->values();
+        
+            $prevCursor = null;
+            if ($items->isNotEmpty()) {
+                $prevCursor = (new Cursor(['id' => $items->first()->id], false))->encode();
+            }
+        
+            return response()->json([
+                'data' => $items,
+                'path' => $request->url(),
+                'per_page' => $limit,
+                'next_cursor' => null,
+                'prev_cursor' => $prevCursor,
+            ]);
+        }
+        
         return $datas->orderBy('id', 'asc')->cursorPaginate($request->limit)->appends($params);
     }
 
-    /**
-     * Display the specified resource.
-     */
     public function show(ShowKasirSaleTransactionRequest $request, int $id)
     {
         //

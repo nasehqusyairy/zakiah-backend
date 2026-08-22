@@ -33,6 +33,7 @@ class IndexKasirSaleTransactionRequest extends FormRequest
             'locs' => 'required|array',
             'locs.*' => 'required|integer|min:0',
             'order_types' => 'nullable|array',
+            'last' => 'sometimes|in:0,1,true,false',
         ];
     }
 }
