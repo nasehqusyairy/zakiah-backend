@@ -24,7 +24,7 @@ class ProductStockMovementObserver
         $originalBuyingPrice = $productStockMovement->original_buying_price;
 
         # new
-        if ($productLocationStock->stock == null) {
+        if (! $productLocationStock->exists) {
             $productLocationStock->stock = 0;
             $productLocationStock->lowest_buy_price = $originalBuyingPrice;
             $productLocationStock->highest_buy_price = $originalBuyingPrice;
