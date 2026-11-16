@@ -74,7 +74,7 @@
             <tr>
                 <td>Tanggal Penutupan</td>
                 <td colspan="3">
-                    {{ \Carbon\Carbon::parse($local_taking_at)->format('Y-M-d h:m:s') }}
+                    {{ \Carbon\Carbon::parse($local_taking_at)->format('Y-M-d H:i:s') }}
                 </td>
             </tr>
             <tr>
